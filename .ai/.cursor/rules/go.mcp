@@ -1,0 +1,99 @@
+// Go MCP Rules
+// Model Context Protocol Rules for Go development
+
+@rule go_error_handling {
+  context: "error handling pattern in Go",
+  pattern: "if err != nil { return nil, err }",
+  explanation: "Standard Go error handling pattern that checks for errors and returns early",
+  examples: [
+    {
+      good: `
+        result, err := someFunction()
+        if err != nil {
+          return nil, err
+        }
+        // Continue with normal processing
+      `,
+      explanation: "Proper error checking and early return"
+    }
+  ]
+}
+
+@rule go_defer_file_close {
+  context: "closing files in Go",
+  pattern: "defer file.Close()",
+  explanation: "Use defer to ensure files are closed even if errors occur",
+  examples: [
+    {
+      good: `
+        file, err := os.Open("filename.txt")
+        if err != nil {
+          return err
+        }
+        defer file.Close()
+        // Process file...
+      `,
+      explanation: "File will be closed when function returns"
+    }
+  ]
+}
+
+@rule go_context_first_param {
+  context: "context usage in Go functions",
+  pattern: "func SomeName(ctx context.Context, ...) {...}",
+  explanation: "Context should be the first parameter in functions that use it",
+  examples: [
+    {
+      good: `
+        func ProcessData(ctx context.Context, data []byte) error {
+          // Use context...
+        }
+      `,
+      explanation: "Context is the first parameter"
+    },
+    {
+      bad: `
+        func ProcessData(data []byte, ctx context.Context) error {
+          // Use context...
+        }
+      `,
+      explanation: "Context should be the first parameter"
+    }
+  ]
+}
+
+@rule go_error_last_return {
+  context: "error as last return value",
+  pattern: "return result, err",
+  explanation: "In Go, error should be the last return value",
+  examples: [
+    {
+      good: `
+        func DoSomething() (int, error) {
+          // ...
+          return result, err
+        }
+      `,
+      explanation: "Error is the last return value"
+    }
+  ]
+}
+
+@rule go_struct_tags {
+  context: "struct field tags",
+  pattern: "`json:\"field_name,omitempty\"`",
+  explanation: "Use tags to control JSON serialization of struct fields",
+  examples: [
+    {
+      good: `
+        type User struct {
+          ID        int    \`json:"id"\`
+          Name      string \`json:"name"\`
+          Email     string \`json:"email,omitempty"\`
+          CreatedAt time.Time \`json:"created_at,omitempty"\`
+        }
+      `,
+      explanation: "Proper struct tags for JSON serialization"
+    }
+  ]
+}
